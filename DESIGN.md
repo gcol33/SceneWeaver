@@ -597,6 +597,235 @@ Save data is validated on load to prevent crashes from corrupted saves:
 
 ---
 
+## Build Pipeline
+
+### Overview
+
+```
+scenes/*.md (Markdown source)
+       ↓
+   build.py (Python script)
+       ↓
+js/story.js (Generated JSON)
+       ↓
+   Engine loads and plays
+```
+
+### Build Command
+
+```bash
+python tools/build_story_from_md.py
+```
+
+### What Gets Built
+
+| Source | Output | Description |
+|--------|--------|-------------|
+| `scenes/*.md` | `js/story.js` | Scene data (text, choices, actions) |
+| `theme.md` | `js/theme.js` | Selected theme config |
+
+### Scene File Format
+
+```markdown
+---
+id: scene_id
+bg: background.jpg
+music: track.mp3
+chars: [sprite.svg]
+set_flags: [met_hero]
+set_key_flags: [completed_tutorial]
+clear_flags: [old_flag]
+add_items: [sword]
+actions:
+  - type: start_battle
+    enemy: goblin
+---
+
+First text block displayed to user.
+
+---
+
+Second text block (after Continue).
+
+---
+
+Third text block.
+
+### Choices
+
+- Go left → left_path
+- Go right (requires: has_key) → right_path
+- Fight (require_skills: Fireball) → battle_scene
+```
+
+### Generated Output
+
+```javascript
+// js/story.js
+var story = {
+  "scene_id": {
+    "id": "scene_id",
+    "bg": "background.jpg",
+    "music": "track.mp3",
+    "chars": ["sprite.svg"],
+    "set_flags": ["met_hero"],
+    "set_key_flags": ["completed_tutorial"],
+    "textBlocks": [
+      "First text block displayed to user.",
+      "Second text block (after Continue).",
+      "Third text block."
+    ],
+    "choices": [
+      { "label": "Go left", "target": "left_path" },
+      { "label": "Go right", "target": "right_path", "require_flags": ["has_key"] },
+      { "label": "Fight", "target": "battle_scene", "require_skills": ["Fireball"] }
+    ]
+  }
+};
+```
+
+---
+
+## Flag System
+
+### Two Types of Flags
+
+| Type | Cleared on "Play Again" | Use Case |
+|------|------------------------|----------|
+| **Regular flags** | Yes | Per-playthrough state (opened_door, talked_to_npc) |
+| **Key flags** | No | Permanent unlocks (completed_tutorial, unlocked_ending_b) |
+
+### Setting Flags in Markdown
+
+```yaml
+---
+id: some_scene
+set_flags: [met_hero, opened_chest]      # Regular flags
+set_key_flags: [boss_defeated]           # Persistent flags
+clear_flags: [has_key]                   # Remove flags
+---
+```
+
+### Checking Flags in Choices
+
+```markdown
+### Choices
+
+- Enter (requires: has_key) → locked_room
+- Leave (requires: !has_key) → go_back
+```
+
+The `!` prefix means "flag must NOT be set".
+
+### API
+
+```javascript
+// Regular flags
+SceneWeaver.flags.set('met_hero');
+SceneWeaver.flags.has('met_hero');      // true
+SceneWeaver.flags.clear('met_hero');
+SceneWeaver.flags.getAll();             // ['flag1', 'flag2']
+
+// Key flags (persistent)
+SceneWeaver.flags.setKey('boss_defeated');
+SceneWeaver.flags.hasKey('boss_defeated');
+SceneWeaver.flags.clearKey('boss_defeated');
+SceneWeaver.flags.getAllKey();
+```
+
+### Reset Behavior
+
+| Action | Regular Flags | Key Flags |
+|--------|---------------|-----------|
+| Play Again | Cleared | Kept |
+| Full Reset | Cleared | Cleared |
+
+---
+
+## History / Undo System
+
+### How It Works
+
+- Every scene load pushes scene ID to history stack
+- Undo pops from history and loads previous scene
+- History is saved with game state
+
+### State
+
+```javascript
+state.history = ['intro', 'chapter1', 'chapter2', 'current_scene'];
+```
+
+### Undo Behavior
+
+1. If `currentBlockIndex > 0`: Go back one text block
+2. If at first block: Pop history, load previous scene
+
+### API
+
+```javascript
+SceneWeaver.history.push(sceneId);    // Called automatically on scene load
+SceneWeaver.history.pop();            // Go back one scene
+SceneWeaver.history.canUndo();        // Check if undo possible
+SceneWeaver.history.clear();          // Clear history
+```
+
+### Configuration
+
+Undo can be restricted to dev mode only (default) or enabled for players:
+
+```javascript
+// In tuning.js
+history: {
+  undoEnabled: false,       // Allow player undo (default: false)
+  devModeUndoEnabled: true  // Allow undo in dev mode (default: true)
+}
+```
+
+---
+
+## Error Handling
+
+### Error Types
+
+```javascript
+// Built-in error classes
+SceneNotFoundError    // Scene ID doesn't exist
+InvalidChoiceError    // Choice target missing or invalid
+ValidationError       // Save data corrupted
+ModuleError          // Module failed to load/init
+```
+
+### Error Screen
+
+When a critical error occurs, show user-friendly error screen:
+
+```javascript
+showErrorScreen({
+  title: 'Scene Not Found',
+  message: 'Could not find scene: "missing_scene"',
+  suggestion: 'Check that the scene ID is correct in your story files.'
+});
+```
+
+### Graceful Degradation
+
+- Missing scene: Show error screen with scene ID
+- Missing background: Use fallback color
+- Missing music: Continue silently
+- Missing sprite: Hide character slot
+- Corrupted save: Clear save, notify user, start fresh
+
+### Logging
+
+```javascript
+_log.debug('Engine', 'Loading scene:', sceneId);
+_log.warn('Engine', 'Missing background:', bg);
+_log.error('Engine', 'Scene not found:', sceneId);
+```
+
+---
+
 ## File Structure
 
 ```
@@ -610,6 +839,11 @@ my-game/
 │   │   └── scene2.md
 │   └── endings/
 │       └── good_end.md
+├── js/
+│   ├── tuning.js             # Core tuning values
+│   └── story.js              # Generated from scenes/
+├── tools/
+│   └── build_story_from_md.py
 ├── assets/
 │   ├── bg/                   # Background images
 │   ├── char/                 # Character sprites
@@ -619,6 +853,7 @@ my-game/
 ├── modules/                  # Optional custom modules
 │   └── my-module/
 │       ├── index.js
+│       ├── tuning.js         # Module tuning overrides
 │       └── style.css
 └── themes/                   # Optional custom themes
     └── my-theme.css
