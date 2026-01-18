@@ -37,6 +37,9 @@ var SceneWeaver = (function() {
             saveManager.init();
         }
 
+        // Initialize registered modules
+        initModules();
+
         // Initialize engine
         if (typeof engine !== 'undefined') {
             engine.init(config);

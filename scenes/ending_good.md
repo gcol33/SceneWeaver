@@ -1,7 +1,6 @@
 ---
 id: ending_good
-bg: shrine.jpg
-music: victory.mp3
+bg: forest.svg
 set_key_flags: [ending_discovered]
 ---
 

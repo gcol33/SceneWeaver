@@ -1,6 +1,6 @@
 ---
 id: forest_creature
-bg: deep_forest.jpg
+bg: forest.svg
 ---
 
 A small fox emerges from the bushes. It looks at you curiously, then scampers away into the woods.

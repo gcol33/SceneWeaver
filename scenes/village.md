@@ -1,6 +1,6 @@
 ---
 id: village
-bg: village.jpg
+bg: village.svg
 set_flags: [visited_village]
 set_key_flags: [has_map]
 ---

@@ -1,6 +1,6 @@
 ---
 id: village_thanks
-bg: village.jpg
+bg: village.svg
 ---
 
 The merchant smiles warmly. "Safe travels, young adventurer!"

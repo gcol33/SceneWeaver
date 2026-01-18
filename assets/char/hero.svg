@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 800">
+  <!-- Simple character silhouette -->
+  <!-- Head -->
+  <circle fill="#e8c19a" cx="200" cy="100" r="70"/>
+  <!-- Hair -->
+  <path fill="#3a2a1a" d="M130,80 Q130,30 200,30 Q270,30 270,80 Q250,70 200,70 Q150,70 130,80"/>
+  <!-- Body -->
+  <path fill="#3a5a8a" d="M140,160 L120,500 L180,500 L200,300 L220,500 L280,500 L260,160 Z"/>
+  <!-- Arms -->
+  <path fill="#3a5a8a" d="M140,170 L80,350 L100,360 L160,220"/>
+  <path fill="#3a5a8a" d="M260,170 L320,350 L300,360 L240,220"/>
+  <!-- Hands -->
+  <circle fill="#e8c19a" cx="85" cy="360" r="25"/>
+  <circle fill="#e8c19a" cx="315" cy="360" r="25"/>
+  <!-- Legs -->
+  <rect fill="#2a3a4a" x="130" y="500" width="50" height="200"/>
+  <rect fill="#2a3a4a" x="220" y="500" width="50" height="200"/>
+  <!-- Feet -->
+  <ellipse fill="#1a1a1a" cx="155" cy="710" rx="35" ry="20"/>
+  <ellipse fill="#1a1a1a" cx="245" cy="710" rx="35" ry="20"/>
+</svg>

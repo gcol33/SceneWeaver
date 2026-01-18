@@ -119,7 +119,16 @@ var Events = {
 
     // Audio events
     MUSIC_CHANGED: 'music:changed',
-    SFX_PLAYED: 'sfx:played'
+    SFX_PLAYED: 'sfx:played',
+
+    // UI events
+    UI_OPENED: 'ui:opened',
+    UI_CLOSED: 'ui:closed',
+
+    // Save slots events
+    SLOT_SAVED: 'slot:saved',
+    SLOT_LOADED: 'slot:loaded',
+    SLOT_DELETED: 'slot:deleted'
 };
 
 // Global exports

@@ -1,7 +1,6 @@
 ---
 id: intro
-bg: forest.jpg
-music: ambient.mp3
+bg: forest.svg
 ---
 
 Welcome to SceneWeaver, a markdown-first visual novel engine.

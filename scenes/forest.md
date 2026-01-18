@@ -1,6 +1,6 @@
 ---
 id: forest
-bg: deep_forest.jpg
+bg: forest.svg
 set_flags: [visited_forest]
 ---
 

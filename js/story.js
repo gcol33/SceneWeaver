@@ -7,8 +7,7 @@
 var story = {
   "ending_good": {
     "id": "ending_good",
-    "bg": "shrine.jpg",
-    "music": "victory.mp3",
+    "bg": "forest.svg",
     "set_key_flags": [
       "ending_discovered"
     ],
@@ -26,7 +25,7 @@ var story = {
   },
   "forest": {
     "id": "forest",
-    "bg": "deep_forest.jpg",
+    "bg": "forest.svg",
     "set_flags": [
       "visited_forest"
     ],
@@ -47,7 +46,7 @@ var story = {
   },
   "forest_creature": {
     "id": "forest_creature",
-    "bg": "deep_forest.jpg",
+    "bg": "forest.svg",
     "textBlocks": [
       "A small fox emerges from the bushes. It looks at you curiously, then scampers away into the woods.",
       "Perhaps it wanted to lead you somewhere?"
@@ -65,8 +64,7 @@ var story = {
   },
   "intro": {
     "id": "intro",
-    "bg": "forest.jpg",
-    "music": "ambient.mp3",
+    "bg": "forest.svg",
     "textBlocks": [
       "Welcome to SceneWeaver, a markdown-first visual novel engine.",
       "This is the second text block. It appears after you click Continue.",
@@ -92,7 +90,7 @@ var story = {
   },
   "village": {
     "id": "village",
-    "bg": "village.jpg",
+    "bg": "village.svg",
     "set_flags": [
       "visited_village"
     ],
@@ -116,7 +114,7 @@ var story = {
   },
   "village_thanks": {
     "id": "village_thanks",
-    "bg": "village.jpg",
+    "bg": "village.svg",
     "textBlocks": [
       "The merchant smiles warmly. \"Safe travels, young adventurer!\""
     ],
