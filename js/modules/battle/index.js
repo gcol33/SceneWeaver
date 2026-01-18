@@ -88,7 +88,7 @@ var battleEngine = (function() {
 
         console.log('[Battle] Starting against', state.enemy.name);
 
-        eventBus.emit('battle:start', {
+        eventBus.emit(Events.BATTLE_START, {
             player: state.player,
             enemy: state.enemy
         });
@@ -107,7 +107,7 @@ var battleEngine = (function() {
         state.turn = 'player';
         state.player.defending = false;
 
-        eventBus.emit('battle:playerTurn', { player: state.player });
+        eventBus.emit(Events.BATTLE_PLAYER_TURN, { player: state.player });
 
         if (typeof battleUI !== 'undefined') {
             battleUI.showPlayerActions();
@@ -117,7 +117,7 @@ var battleEngine = (function() {
     function startEnemyTurn() {
         state.turn = 'enemy';
 
-        eventBus.emit('battle:enemyTurn', { enemy: state.enemy });
+        eventBus.emit(Events.BATTLE_ENEMY_TURN, { enemy: state.enemy });
 
         if (typeof battleUI !== 'undefined') {
             battleUI.showEnemyTurn();
@@ -152,7 +152,7 @@ var battleEngine = (function() {
 
         state.player.defending = true;
 
-        eventBus.emit('battle:playerDefend', {});
+        eventBus.emit(Events.BATTLE_PLAYER_DEFEND, {});
 
         if (typeof battleUI !== 'undefined') {
             battleUI.showMessage('Defending...');
@@ -161,7 +161,7 @@ var battleEngine = (function() {
         // End player turn
         setTimeout(function() {
             startEnemyTurn();
-        }, 500);
+        }, TUNING.get('battle.timing.defendDelay', 500));
     }
 
     function resolvePlayerAttack(qteResult) {
@@ -178,7 +178,7 @@ var battleEngine = (function() {
 
         state.enemy.hp = Math.max(0, state.enemy.hp - damage);
 
-        eventBus.emit('battle:damage', {
+        eventBus.emit(Events.BATTLE_DAMAGE, {
             target: 'enemy',
             damage: damage,
             qteZone: qteResult.zone
@@ -229,7 +229,7 @@ var battleEngine = (function() {
             var counterDamage = Math.floor(state.player.attack * 0.5);
             state.enemy.hp = Math.max(0, state.enemy.hp - counterDamage);
 
-            eventBus.emit('battle:counter', { damage: counterDamage });
+            eventBus.emit(Events.BATTLE_COUNTER, { damage: counterDamage });
 
             if (typeof battleUI !== 'undefined') {
                 battleUI.showMessage('Counter! ' + counterDamage + ' damage!');
@@ -238,7 +238,7 @@ var battleEngine = (function() {
 
         state.player.hp = Math.max(0, state.player.hp - damage);
 
-        eventBus.emit('battle:damage', {
+        eventBus.emit(Events.BATTLE_DAMAGE, {
             target: 'player',
             damage: damage,
             qteZone: qteResult.zone,
@@ -299,7 +299,7 @@ var battleEngine = (function() {
 
         console.log('[Battle] Ended:', won ? 'Victory!' : 'Defeat');
 
-        eventBus.emit('battle:end', result);
+        eventBus.emit(Events.BATTLE_END, result);
 
         if (typeof battleUI !== 'undefined') {
             battleUI.showOutro(won, function() {
@@ -328,13 +328,21 @@ var battleEngine = (function() {
             battleUI.hide();
         }
 
-        eventBus.emit('battle:cancelled', {});
+        eventBus.emit(Events.BATTLE_CANCELLED, {});
+    }
+
+    function destroy() {
+        cancel();
+        state.onComplete = null;
+        state.winTarget = null;
+        state.loseTarget = null;
     }
 
     // === Public API ===
 
     return {
         init: init,
+        destroy: destroy,
         start: start,
         playerAttack: playerAttack,
         playerDefend: playerDefend,

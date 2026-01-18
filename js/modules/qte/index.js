@@ -213,7 +213,7 @@ var qteEngine = (function() {
             callback(result);
         }
 
-        eventBus.emit('qte:complete', result);
+        eventBus.emit(Events.QTE_RESULT, result);
     }
 
     function getModifiers(type, zone) {
@@ -291,7 +291,7 @@ var qteEngine = (function() {
             startCountdown(config.timing.countdownDuration);
         }, config.timing.startDelay);
 
-        eventBus.emit('qte:start', { type: 'skill' });
+        eventBus.emit(Events.QTE_START, { type: 'skill' });
         return true;
     }
 
@@ -331,7 +331,7 @@ var qteEngine = (function() {
             startCountdown(config.timing.countdownDuration);
         }, config.timing.startDelay * 0.5);
 
-        eventBus.emit('qte:start', { type: 'defend' });
+        eventBus.emit(Events.QTE_START, { type: 'defend' });
         return true;
     }
 
@@ -343,7 +343,12 @@ var qteEngine = (function() {
         }
 
         resetState();
-        eventBus.emit('qte:cancelled', {});
+        eventBus.emit(Events.QTE_CANCEL, {});
+    }
+
+    function destroy() {
+        cancel();
+        // Note: Event listeners persist but check state.active
     }
 
     // === Input Binding ===
@@ -387,6 +392,7 @@ var qteEngine = (function() {
 
     return {
         init: init,
+        destroy: destroy,
         startSkillQTE: startSkillQTE,
         startDefendQTE: startDefendQTE,
         cancel: cancel,

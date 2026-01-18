@@ -55,6 +55,53 @@ var textRenderer = (function() {
     }
 
     // ===========================================
+    // TYPEWRITER CORE
+    // ===========================================
+
+    /**
+     * Core typewriter function - shared by block and log modes
+     * @param {HTMLElement} element - Target element
+     * @param {string} text - Text to type
+     * @param {number} speed - Ms per character
+     * @param {function} onComplete - Called when done
+     */
+    function typewriterCore(element, text, speed, onComplete) {
+        var index = 0;
+        state.isTyping = true;
+        element.innerHTML = '';
+
+        function type() {
+            if (index < text.length) {
+                // Handle HTML tags as atomic units
+                if (text[index] === '<') {
+                    var tagEnd = text.indexOf('>', index);
+                    if (tagEnd > index) {
+                        element.innerHTML += text.substring(index, tagEnd + 1);
+                        index = tagEnd + 1;
+                        state.typewriterTimer = setTimeout(type, 0);
+                        return;
+                    }
+                }
+
+                // Handle newlines
+                if (text[index] === '\n') {
+                    element.innerHTML += '<br>';
+                } else {
+                    element.innerHTML += text[index];
+                }
+
+                index++;
+                state.typewriterTimer = setTimeout(type, speed);
+            } else {
+                state.isTyping = false;
+                if (onComplete) onComplete();
+            }
+        }
+
+        type();
+    }
+
+    // ===========================================
     // BLOCK MODE (Story/Dialogue)
     // ===========================================
 
@@ -66,47 +113,10 @@ var textRenderer = (function() {
         state.currentText = text;
         state.onComplete = callback || null;
 
-        typewriterEffect(text);
-    }
-
-    function typewriterEffect(text) {
-        var speed = config.typewriterSpeed;
-        var index = 0;
-
-        state.isTyping = true;
         elements.textContent.classList.remove('sw-typing-complete');
-        elements.textContent.innerHTML = '';
-
         eventBus.emit(Events.TEXT_START, { text: text });
 
-        function type() {
-            if (index < text.length) {
-                // Handle HTML tags as atomic units
-                if (text[index] === '<') {
-                    var tagEnd = text.indexOf('>', index);
-                    if (tagEnd > index) {
-                        elements.textContent.innerHTML += text.substring(index, tagEnd + 1);
-                        index = tagEnd + 1;
-                        state.typewriterTimer = setTimeout(type, 0);
-                        return;
-                    }
-                }
-
-                // Handle newlines
-                if (text[index] === '\n') {
-                    elements.textContent.innerHTML += '<br>';
-                } else {
-                    elements.textContent.innerHTML += text[index];
-                }
-
-                index++;
-                state.typewriterTimer = setTimeout(type, speed);
-            } else {
-                finishTypewriter();
-            }
-        }
-
-        type();
+        typewriterCore(elements.textContent, text, config.typewriterSpeed, finishTypewriter);
     }
 
     function skipTypewriter() {
@@ -199,34 +209,7 @@ var textRenderer = (function() {
     }
 
     function typewriterLogRow(row, text, callback) {
-        var speed = config.typewriterSpeed;
-        var index = 0;
-
-        state.isTyping = true;
-        row.innerHTML = '';
-
-        function type() {
-            if (index < text.length) {
-                if (text[index] === '<') {
-                    var tagEnd = text.indexOf('>', index);
-                    if (tagEnd > index) {
-                        row.innerHTML += text.substring(index, tagEnd + 1);
-                        index = tagEnd + 1;
-                        state.typewriterTimer = setTimeout(type, 0);
-                        return;
-                    }
-                }
-
-                row.innerHTML += text[index];
-                index++;
-                state.typewriterTimer = setTimeout(type, speed);
-            } else {
-                state.isTyping = false;
-                if (callback) callback();
-            }
-        }
-
-        type();
+        typewriterCore(row, text, config.typewriterSpeed, callback);
     }
 
     /**
@@ -262,12 +245,32 @@ var textRenderer = (function() {
         }
     }
 
+    /**
+     * Clean up module resources
+     */
+    function destroy() {
+        clearTimeout(state.typewriterTimer);
+        state.isTyping = false;
+        state.typewriterTimer = null;
+        state.currentText = '';
+        state.onComplete = null;
+        state.logRows = [];
+
+        if (elements.textContent) {
+            elements.textContent.innerHTML = '';
+        }
+
+        elements.textBox = null;
+        elements.textContent = null;
+    }
+
     // ===========================================
     // PUBLIC API
     // ===========================================
 
     return {
         init: init,
+        destroy: destroy,
 
         // Block mode
         showBlock: showBlock,

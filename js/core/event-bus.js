@@ -128,7 +128,29 @@ var Events = {
     // Save slots events
     SLOT_SAVED: 'slot:saved',
     SLOT_LOADED: 'slot:loaded',
-    SLOT_DELETED: 'slot:deleted'
+    SLOT_DELETED: 'slot:deleted',
+
+    // Battle events
+    BATTLE_START: 'battle:start',
+    BATTLE_END: 'battle:end',
+    BATTLE_CANCELLED: 'battle:cancelled',
+    BATTLE_PLAYER_TURN: 'battle:playerTurn',
+    BATTLE_ENEMY_TURN: 'battle:enemyTurn',
+    BATTLE_DAMAGE: 'battle:damage',
+    BATTLE_PLAYER_DEFEND: 'battle:playerDefend',
+    BATTLE_COUNTER: 'battle:counter',
+
+    // QTE events
+    QTE_START: 'qte:start',
+    QTE_INPUT: 'qte:input',
+    QTE_RESULT: 'qte:result',
+    QTE_CANCEL: 'qte:cancel',
+
+    // Quiz events
+    QUIZ_START: 'quiz:start',
+    QUIZ_ANSWER: 'quiz:answer',
+    QUIZ_END: 'quiz:end',
+    QUIZ_CANCEL: 'quiz:cancel'
 };
 
 // Global exports

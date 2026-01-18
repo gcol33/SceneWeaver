@@ -145,9 +145,12 @@ var TUNING = {
         timing: {
             enemyDelay: 1000,   // Delay before enemy attacks (ms)
             turnDelay: 800,     // Delay between turns (ms)
+            defendDelay: 500,   // Delay after defending (ms)
             victoryDelay: 1000, // Delay before victory screen (ms)
             defeatDelay: 1000,  // Delay before defeat screen (ms)
-            outroDelay: 2000    // How long victory/defeat shows (ms)
+            outroDelay: 2000,   // How long victory/defeat shows (ms)
+            damageDisplay: 1000,// How long damage numbers show (ms)
+            hitFlash: 300       // Hit flash animation duration (ms)
         }
     }
 };

@@ -14,9 +14,7 @@ var engine = (function() {
     // === State ===
     var state = {
         currentSceneId: null,
-        currentBlockIndex: 0,
-        isTyping: false,
-        typewriterTimer: null
+        currentBlockIndex: 0
     };
 
     // === DOM Elements ===
@@ -81,8 +79,8 @@ var engine = (function() {
     function setupEventListeners() {
         // Continue button
         elements.continueBtn.addEventListener('click', function() {
-            if (state.isTyping) {
-                skipTypewriter();
+            if (textRenderer.isTyping()) {
+                textRenderer.skipTypewriter();
             } else {
                 advanceText();
             }
@@ -90,8 +88,8 @@ var engine = (function() {
 
         // Click on text box to skip/advance
         elements.textBox.addEventListener('click', function() {
-            if (state.isTyping) {
-                skipTypewriter();
+            if (textRenderer.isTyping()) {
+                textRenderer.skipTypewriter();
             }
         });
 
@@ -99,8 +97,8 @@ var engine = (function() {
         document.addEventListener('keydown', function(e) {
             if (e.key === ' ' || e.key === 'Enter') {
                 e.preventDefault();
-                if (state.isTyping) {
-                    skipTypewriter();
+                if (textRenderer.isTyping()) {
+                    textRenderer.skipTypewriter();
                 } else if (!elements.choices.children.length) {
                     advanceText();
                 }
@@ -247,63 +245,8 @@ var engine = (function() {
         // Show continue button
         elements.continueBtn.classList.remove('sw-hidden');
 
-        // Start typewriter
-        typewriterEffect(text);
-    }
-
-    function typewriterEffect(text) {
-        var speed = TUNING.get('text.speed.normal', 18);
-        var index = 0;
-
-        state.isTyping = true;
-        elements.textContent.classList.remove('sw-typing-complete');
-        elements.textContent.innerHTML = '';
-
-        eventBus.emit(Events.TEXT_START, { text: text });
-
-        function type() {
-            if (index < text.length) {
-                // Handle HTML tags
-                if (text[index] === '<') {
-                    var tagEnd = text.indexOf('>', index);
-                    if (tagEnd > index) {
-                        elements.textContent.innerHTML += text.substring(index, tagEnd + 1);
-                        index = tagEnd + 1;
-                        state.typewriterTimer = setTimeout(type, 0);
-                        return;
-                    }
-                }
-
-                elements.textContent.innerHTML += text[index];
-                index++;
-                state.typewriterTimer = setTimeout(type, speed);
-            } else {
-                finishTypewriter();
-            }
-        }
-
-        type();
-    }
-
-    function skipTypewriter() {
-        if (!state.isTyping) return;
-
-        clearTimeout(state.typewriterTimer);
-
-        var scene = story[state.currentSceneId];
-        if (scene && scene.textBlocks) {
-            elements.textContent.innerHTML = scene.textBlocks[state.currentBlockIndex];
-        }
-
-        finishTypewriter();
-        eventBus.emit(Events.TEXT_SKIP, {});
-    }
-
-    function finishTypewriter() {
-        state.isTyping = false;
-        state.typewriterTimer = null;
-        elements.textContent.classList.add('sw-typing-complete');
-        eventBus.emit(Events.TEXT_COMPLETE, {});
+        // Delegate to textRenderer
+        textRenderer.showBlock(text);
     }
 
     function advanceText() {
@@ -411,12 +354,10 @@ var engine = (function() {
         init: init,
         loadScene: loadScene,
         advanceText: advanceText,
-        skipTypewriter: skipTypewriter,
 
         // Getters
         getCurrentSceneId: function() { return state.currentSceneId; },
-        getCurrentBlockIndex: function() { return state.currentBlockIndex; },
-        isTyping: function() { return state.isTyping; }
+        getCurrentBlockIndex: function() { return state.currentBlockIndex; }
     };
 })();
 

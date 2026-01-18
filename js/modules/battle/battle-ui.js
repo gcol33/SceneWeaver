@@ -177,13 +177,13 @@ var battleUI = (function() {
             if (dmgEl.parentNode) {
                 dmgEl.parentNode.removeChild(dmgEl);
             }
-        }, 1000);
+        }, TUNING.get('battle.timing.damageDisplay', 1000));
 
         // Flash effect
         targetEl.classList.add('sw-battle-hit');
         setTimeout(function() {
             targetEl.classList.remove('sw-battle-hit');
-        }, 300);
+        }, TUNING.get('battle.timing.hitFlash', 300));
     }
 
     // === Show Message ===

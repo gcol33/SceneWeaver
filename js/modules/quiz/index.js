@@ -96,7 +96,7 @@ var quizEngine = (function() {
 
         console.log('[Quiz] Starting with', state.questions.length, 'questions');
 
-        eventBus.emit('quiz:start', { questionCount: state.questions.length });
+        eventBus.emit(Events.QUIZ_START, { questionCount: state.questions.length });
         showCurrentQuestion();
     }
 
@@ -184,7 +184,7 @@ var quizEngine = (function() {
             markAnswerSeen(state.quizId, state.currentIndex, correctIndex);
         }
 
-        eventBus.emit('quiz:answer', {
+        eventBus.emit(Events.QUIZ_ANSWER, {
             questionIndex: state.currentIndex,
             answerIndex: answerIndex,
             correct: isCorrect
@@ -220,7 +220,7 @@ var quizEngine = (function() {
 
         console.log('[Quiz] Ended:', result);
 
-        eventBus.emit('quiz:end', result);
+        eventBus.emit(Events.QUIZ_END, result);
 
         if (typeof quizUI !== 'undefined') {
             quizUI.showOutro(result, function() {
@@ -243,7 +243,13 @@ var quizEngine = (function() {
             quizUI.hide();
         }
 
-        eventBus.emit('quiz:cancelled', {});
+        eventBus.emit(Events.QUIZ_CANCEL, {});
+    }
+
+    function destroy() {
+        cancel();
+        state.onComplete = null;
+        state.questions = [];
     }
 
     function clearSeenAnswers() {
@@ -256,6 +262,7 @@ var quizEngine = (function() {
 
     return {
         start: start,
+        destroy: destroy,
         submitAnswer: submitAnswer,
         isActive: function() { return state.active; },
         getCurrentIndex: function() { return state.currentIndex; },
