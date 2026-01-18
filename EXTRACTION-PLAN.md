@@ -65,21 +65,27 @@ Extract reusable engine from Andi's codebase into SceneWeaver.
 
 ---
 
-## Phase 4: Optional Modules
+## Phase 4: Core Modules
 
 ### 4.1 Save Slots Module
 - [x] `modules/save-slots/` — Multi-slot UI
 - [x] Export/import functionality
 
-### 4.2 Battle Module (Later)
-- [ ] `modules/battle/` — RPG combat
-- [ ] Requires QTE module
+### 4.2 QTE Module
+- [x] `modules/qte/` — Timing bar with zones
+- [x] Skill QTE (attack timing)
+- [x] Defend QTE (countdown parry)
 
-### 4.3 QTE Module (Later)
-- [ ] `modules/qte/` — Timing bar
+### 4.3 Quiz Module
+- [x] `modules/quiz/` — Timed questions
+- [x] Seen-answer hints
+- [x] Victory/defeat outcomes
 
-### 4.4 Quiz Module (Later)
-- [ ] `modules/quiz/` — Timed questions
+### 4.4 Battle Module
+- [x] `modules/battle/` — Turn-based RPG combat
+- [x] Player attack/defend actions
+- [x] QTE integration for damage calculation
+- [x] HP system with victory/defeat
 
 ---
 
@@ -126,11 +132,11 @@ Andi/css/layout-system.css     → css/layout.css (adapted)
 Andi/css/style.css (parts)     → css/base.css (new)
 ```
 
-### Priority 4: Modules (Optional)
+### Priority 4: Core Modules ✓
 ```
-Andi/js/modules/battle/        → modules/battle/ (later)
-Andi/js/modules/qte/           → modules/qte/ (later)
-Andi/js/modules/quiz/          → modules/quiz/ (later)
+Andi/js/modules/qte/           → js/modules/qte/
+Andi/js/modules/quiz/          → js/modules/quiz/
+Andi/js/modules/battle/        → js/modules/battle/
 ```
 
 ---
@@ -175,28 +181,29 @@ Phase 3 complete when:
 - [x] Looks good on mobile (9:16)
 - [x] Theme can be swapped
 
-Phase 4+ complete when:
-- [ ] Battle module works (optional, later)
-- [x] Save slots module works (optional)
+Phase 4 complete when:
+- [x] QTE module works
+- [x] Quiz module works
+- [x] Battle module works
+- [x] Save slots module works
 
 ---
 
 ## Current Status
 
-**Phases 1-3 and 5 COMPLETE**
+**ALL PHASES COMPLETE**
 
-Core engine is functional with:
+Core engine is fully functional with:
 - 6 sample scenes
 - Markdown build pipeline
 - Text block and log modes
 - Flag system (regular + key)
-- Autosave
-- Save slots module
+- Autosave + save slots
+- QTE module (skill/defend timing)
+- Quiz module (timed questions)
+- Battle module (turn-based combat)
 - CSS scaling with --u unit
 - Theme support
 
-**Remaining (optional, for later):**
-- Battle module
-- QTE module
-- Quiz module
-- Browser testing
+**Remaining:**
+- Browser testing on mobile
