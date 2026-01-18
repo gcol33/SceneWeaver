@@ -1,0 +1,176 @@
+/**
+ * SceneWeaver - Quiz Module Styles
+ */
+
+/* Overlay */
+.sw-quiz-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--sw-bg-overlay, rgba(0, 0, 0, 0.85));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: var(--sw-z-modal, 1000);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    padding: calc(24 * var(--u));
+}
+
+.sw-quiz-overlay.sw-quiz-visible {
+    opacity: 1;
+}
+
+/* Progress */
+.sw-quiz-progress {
+    font-size: calc(18 * var(--u));
+    color: var(--sw-text-dim);
+    margin-bottom: calc(16 * var(--u));
+}
+
+/* Countdown */
+.sw-quiz-countdown {
+    font-size: calc(72 * var(--u));
+    font-weight: bold;
+    color: var(--sw-text-color);
+    margin-bottom: calc(24 * var(--u));
+}
+
+.sw-quiz-countdown-urgent {
+    color: #f39c12;
+}
+
+.sw-quiz-countdown-critical {
+    color: #e74c3c;
+}
+
+.sw-quiz-countdown-pulse {
+    animation: sw-quiz-pulse 0.3s ease;
+}
+
+@keyframes sw-quiz-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* Question */
+.sw-quiz-question {
+    font-size: calc(28 * var(--u));
+    color: var(--sw-text-color);
+    text-align: center;
+    max-width: calc(800 * var(--u));
+    margin-bottom: calc(32 * var(--u));
+    line-height: 1.4;
+}
+
+/* Answers */
+.sw-quiz-answers {
+    display: flex;
+    flex-direction: column;
+    gap: calc(12 * var(--u));
+    width: 100%;
+    max-width: calc(600 * var(--u));
+}
+
+.sw-quiz-answer-btn {
+    padding: calc(16 * var(--u)) calc(24 * var(--u));
+    font-size: calc(20 * var(--u));
+    background: var(--sw-btn-bg, rgba(255, 255, 255, 0.1));
+    border: calc(2 * var(--u)) solid var(--sw-box-border);
+    border-radius: calc(8 * var(--u));
+    color: var(--sw-text-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.sw-quiz-answer-btn:hover:not(:disabled) {
+    background: var(--sw-btn-hover, rgba(255, 255, 255, 0.2));
+    border-color: var(--sw-accent-color);
+}
+
+.sw-quiz-answer-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.sw-quiz-answer-selected {
+    background: var(--sw-accent-color, #ffd700) !important;
+    color: #000 !important;
+    border-color: var(--sw-accent-color) !important;
+}
+
+.sw-quiz-answer-hint {
+    border-color: #27ae60;
+    box-shadow: 0 0 calc(10 * var(--u)) rgba(39, 174, 96, 0.3);
+}
+
+/* Correct flash */
+.sw-quiz-correct-flash {
+    animation: sw-quiz-correct-flash 0.3s ease;
+}
+
+@keyframes sw-quiz-correct-flash {
+    0%, 100% { background-color: rgba(0, 0, 0, 0.85); }
+    50% { background-color: rgba(39, 174, 96, 0.3); }
+}
+
+/* Outro */
+.sw-quiz-outro-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: calc(var(--sw-z-modal) + 1);
+    animation: sw-quiz-outro-appear 0.5s ease;
+}
+
+@keyframes sw-quiz-outro-appear {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.sw-quiz-victory {
+    background: linear-gradient(135deg, rgba(39, 174, 96, 0.9), rgba(46, 204, 113, 0.8));
+}
+
+.sw-quiz-defeat {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.8));
+}
+
+.sw-quiz-outro-text {
+    font-size: calc(48 * var(--u));
+    font-weight: bold;
+    color: #ffffff;
+    text-shadow: 0 calc(4 * var(--u)) calc(8 * var(--u)) rgba(0, 0, 0, 0.5);
+    margin-bottom: calc(16 * var(--u));
+}
+
+.sw-quiz-outro-subtext {
+    font-size: calc(24 * var(--u));
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Portrait mode */
+@media (orientation: portrait) {
+    .sw-quiz-question {
+        font-size: calc(24 * var(--u));
+    }
+
+    .sw-quiz-countdown {
+        font-size: calc(56 * var(--u));
+    }
+
+    .sw-quiz-answer-btn {
+        font-size: calc(18 * var(--u));
+        padding: calc(14 * var(--u)) calc(20 * var(--u));
+    }
+}

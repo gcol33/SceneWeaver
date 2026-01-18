@@ -90,6 +90,65 @@ var TUNING = {
     input: {
         clickDebounce: 100,     // Min time between clicks (ms)
         holdThreshold: 500      // Time before hold detected (ms)
+    },
+
+    // =========================================
+    // QTE (Quick-Time Events)
+    // =========================================
+
+    qte: {
+        bar: {
+            duration: 2000,     // Full bar oscillation time (ms)
+            oscillations: 2     // Number of back-and-forth cycles
+        },
+        zones: {
+            perfect: 10,        // Perfect zone width (% of bar, each side)
+            good: 25,           // Good zone width (%)
+            normal: 40          // Normal zone width (%)
+        },
+        timing: {
+            startDelay: 300,    // Delay before QTE starts (ms)
+            resultDisplay: 800, // How long result shows (ms)
+            countdownDuration: 5// Countdown seconds for defend QTE
+        },
+        modifiers: {
+            perfect: { bonusDamage: 0.5, damageReduction: 1.0 },
+            good: { bonusDamage: 0.25, damageReduction: 0.75 },
+            normal: { bonusDamage: 0, damageReduction: 0.5 },
+            bad: { bonusDamage: -0.25, damageReduction: 0 }
+        }
+    },
+
+    // =========================================
+    // QUIZ
+    // =========================================
+
+    quiz: {
+        timePerQuestion: 10,    // Default seconds per question
+        urgentThreshold: 3,     // Time when countdown turns orange
+        criticalThreshold: 2,   // Time when countdown turns red
+        feedbackDelay: 500,     // Delay after answer feedback (ms)
+        outroDelay: 2000        // How long victory/defeat shows (ms)
+    },
+
+    // =========================================
+    // BATTLE
+    // =========================================
+
+    battle: {
+        player: {
+            hp: 100,
+            maxHP: 100,
+            attack: 15,
+            defense: 5
+        },
+        timing: {
+            enemyDelay: 1000,   // Delay before enemy attacks (ms)
+            turnDelay: 800,     // Delay between turns (ms)
+            victoryDelay: 1000, // Delay before victory screen (ms)
+            defeatDelay: 1000,  // Delay before defeat screen (ms)
+            outroDelay: 2000    // How long victory/defeat shows (ms)
+        }
     }
 };
 
