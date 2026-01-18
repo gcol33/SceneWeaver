@@ -73,26 +73,57 @@ var quizEngine = (function() {
     function start(config, onComplete) {
         if (state.active) {
             console.warn('[Quiz] Already active');
-            return;
+            return false;
         }
 
-        if (!config || !config.questions || config.questions.length === 0) {
+        // Validate config
+        if (!config || typeof config !== 'object') {
+            console.error('[Quiz] Invalid config provided');
+            if (onComplete) onComplete({ won: false, target: null, reason: 'invalid_config' });
+            return false;
+        }
+
+        // Validate questions array
+        if (!Array.isArray(config.questions) || config.questions.length === 0) {
             console.error('[Quiz] No questions provided');
-            if (onComplete) onComplete({ won: false, target: null });
-            return;
+            if (onComplete) onComplete({ won: false, target: null, reason: 'no_questions' });
+            return false;
+        }
+
+        // Validate each question has required fields
+        var validQuestions = config.questions.filter(function(q, i) {
+            if (!q || typeof q !== 'object') {
+                console.warn('[Quiz] Question ' + i + ' is invalid, skipping');
+                return false;
+            }
+            if (!q.text || typeof q.text !== 'string') {
+                console.warn('[Quiz] Question ' + i + ' missing text, skipping');
+                return false;
+            }
+            if (!Array.isArray(q.answers) || q.answers.length < 2) {
+                console.warn('[Quiz] Question ' + i + ' needs at least 2 answers, skipping');
+                return false;
+            }
+            return true;
+        });
+
+        if (validQuestions.length === 0) {
+            console.error('[Quiz] No valid questions after validation');
+            if (onComplete) onComplete({ won: false, target: null, reason: 'no_valid_questions' });
+            return false;
         }
 
         var cfg = getConfig();
 
         state.active = true;
-        state.questions = config.questions;
+        state.questions = validQuestions;
         state.currentIndex = 0;
-        state.timePerQuestion = config.timePerQuestion || cfg.defaultTime;
+        state.timePerQuestion = Math.max(1, parseInt(config.timePerQuestion, 10) || cfg.defaultTime);
         state.timeRemaining = state.timePerQuestion;
-        state.winTarget = config.winTarget;
-        state.loseTarget = config.loseTarget;
-        state.quizId = config.quizId || 'default';
-        state.onComplete = onComplete;
+        state.winTarget = config.winTarget || null;
+        state.loseTarget = config.loseTarget || null;
+        state.quizId = String(config.quizId || 'default');
+        state.onComplete = typeof onComplete === 'function' ? onComplete : null;
 
         console.log('[Quiz] Starting with', state.questions.length, 'questions');
 

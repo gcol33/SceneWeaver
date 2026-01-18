@@ -30,8 +30,6 @@ var engine = (function() {
 
     // === Configuration ===
     var config = {
-        bgPath: 'assets/bg/',
-        charPath: 'assets/char/',
         startScene: 'intro'
     };
 
@@ -41,8 +39,6 @@ var engine = (function() {
 
     function init(cfg) {
         if (cfg) {
-            if (cfg.bgPath) config.bgPath = cfg.bgPath;
-            if (cfg.charPath) config.charPath = cfg.charPath;
             if (cfg.startScene) config.startScene = cfg.startScene;
         }
 
@@ -194,7 +190,7 @@ var engine = (function() {
             return;
         }
 
-        var url = config.bgPath + bg;
+        var url = TUNING.get('paths.backgrounds', 'assets/bg/') + bg;
         elements.background.style.backgroundImage = 'url("' + url + '")';
     }
 
@@ -207,12 +203,14 @@ var engine = (function() {
 
         if (!chars || !chars.length) return;
 
+        var charPath = TUNING.get('paths.characters', 'assets/char/');
+
         for (var i = 0; i < chars.length; i++) {
             var char = chars[i];
             var file = typeof char === 'string' ? char : char.file;
 
             var img = document.createElement('img');
-            img.src = config.charPath + file;
+            img.src = charPath + file;
             img.className = 'sw-sprite sw-sprite--center sw-entering';
             elements.sprites.appendChild(img);
         }

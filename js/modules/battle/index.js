@@ -56,28 +56,38 @@ var battleEngine = (function() {
     function start(config, onComplete) {
         if (state.active) {
             console.warn('[Battle] Already active');
-            return;
+            return false;
         }
 
         config = config || {};
 
-        // Setup player
+        // Validate callback
+        if (typeof onComplete !== 'function') {
+            console.warn('[Battle] No onComplete callback provided');
+        }
+
+        // Setup player with validated values
+        var playerHP = Math.max(1, parseInt(config.playerHP, 10) || TUNING.get('battle.player.hp', 100));
+        var playerMaxHP = Math.max(1, parseInt(config.playerMaxHP, 10) || TUNING.get('battle.player.maxHP', 100));
+
         state.player = {
-            hp: config.playerHP || TUNING.get('battle.player.hp', 100),
-            maxHP: config.playerMaxHP || TUNING.get('battle.player.maxHP', 100),
-            attack: config.playerAttack || TUNING.get('battle.player.attack', 15),
-            defense: config.playerDefense || TUNING.get('battle.player.defense', 5),
+            hp: Math.min(playerHP, playerMaxHP),
+            maxHP: playerMaxHP,
+            attack: Math.max(0, parseInt(config.playerAttack, 10) || TUNING.get('battle.player.attack', 15)),
+            defense: Math.max(0, parseInt(config.playerDefense, 10) || TUNING.get('battle.player.defense', 5)),
             defending: false
         };
 
-        // Setup enemy
+        // Setup enemy with validated values
         var enemyConfig = config.enemy || {};
+        var enemyHP = Math.max(1, parseInt(enemyConfig.hp, 10) || 50);
+
         state.enemy = {
-            name: enemyConfig.name || 'Enemy',
-            hp: enemyConfig.hp || 50,
-            maxHP: enemyConfig.hp || 50,
-            attack: enemyConfig.attack || 10,
-            defense: enemyConfig.defense || 3
+            name: String(enemyConfig.name || 'Enemy'),
+            hp: enemyHP,
+            maxHP: enemyHP,
+            attack: Math.max(0, parseInt(enemyConfig.attack, 10) || 10),
+            defense: Math.max(0, parseInt(enemyConfig.defense, 10) || 3)
         };
 
         state.winTarget = config.winTarget;

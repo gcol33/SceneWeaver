@@ -265,6 +265,12 @@ var qteEngine = (function() {
             return false;
         }
 
+        // Validate callback
+        if (typeof callback !== 'function') {
+            console.error('[QTE] Skill QTE requires a callback function');
+            return false;
+        }
+
         params = params || {};
         state.active = true;
         state.type = 'skill';
@@ -298,6 +304,12 @@ var qteEngine = (function() {
     function startDefendQTE(params, callback) {
         if (state.active) {
             console.warn('[QTE] Already active');
+            return false;
+        }
+
+        // Validate callback
+        if (typeof callback !== 'function') {
+            console.error('[QTE] Defend QTE requires a callback function');
             return false;
         }
 

@@ -15,11 +15,6 @@ var audioManager = (function() {
     var currentTrack = null;
     var volume = 0.16;
 
-    var config = {
-        musicPath: 'assets/music/',
-        sfxPath: 'assets/sfx/'
-    };
-
     function init() {
         // Create music element
         musicElement = document.createElement('audio');
@@ -43,7 +38,7 @@ var audioManager = (function() {
 
         if (track === currentTrack) return;
 
-        var src = config.musicPath + track;
+        var src = TUNING.get('paths.music', 'assets/music/') + track;
 
         // Crossfade (simple version)
         musicElement.src = src;
@@ -72,7 +67,7 @@ var audioManager = (function() {
     function playSfx(sfx) {
         if (!sfx) return;
 
-        var audio = new Audio(config.sfxPath + sfx);
+        var audio = new Audio(TUNING.get('paths.sfx', 'assets/sfx/') + sfx);
         audio.volume = Math.min(volume * 2, 1); // SFX slightly louder
         audio.play().catch(function(e) {
             console.warn('[AudioManager] SFX play failed:', e.message);
@@ -100,23 +95,13 @@ var audioManager = (function() {
         return volume;
     }
 
-    /**
-     * Configure paths
-     * @param {Object} paths - { musicPath, sfxPath }
-     */
-    function configure(paths) {
-        if (paths.musicPath) config.musicPath = paths.musicPath;
-        if (paths.sfxPath) config.sfxPath = paths.sfxPath;
-    }
-
     return {
         init: init,
         setMusic: setMusic,
         stopMusic: stopMusic,
         playSfx: playSfx,
         setVolume: setVolume,
-        getVolume: getVolume,
-        configure: configure
+        getVolume: getVolume
     };
 })();
 

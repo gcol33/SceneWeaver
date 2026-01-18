@@ -76,11 +76,36 @@ Code quality improvements identified during structure review.
 
 ---
 
-## LOW Priority (Skip for now)
+## LOW Priority
 
-- Path configuration consolidation
-- Stricter input validation
-- JSDoc standardization
+### 7. Consolidate Path Configuration
+**Problem:** Asset paths scattered across engine.js and audio-manager.js
+
+**Solution:**
+- [x] Add `TUNING.paths` with backgrounds, characters, music, sfx, fonts
+- [x] Update engine.js to use `TUNING.get('paths.*')`
+- [x] Update audio-manager.js to use `TUNING.get('paths.*')`
+- [x] Remove duplicate path config and `configure()` method
+
+**Files:** tuning.js, engine.js, audio-manager.js
+
+---
+
+### 8. Add Input Validation
+**Problem:** Module start() functions don't validate inputs
+
+**Solution:**
+- [x] battle.start() - Validate HP/attack/defense as positive numbers
+- [x] quiz.start() - Validate questions array and structure
+- [x] qte.startSkillQTE/startDefendQTE() - Require callback function
+
+**Files:** battle/index.js, quiz/index.js, qte/index.js
+
+---
+
+### 9. JSDoc Standardization (Skip for now)
+
+- Add consistent JSDoc to all public functions
 
 ---
 
@@ -93,7 +118,9 @@ Code quality improvements identified during structure review.
 5. [x] Extract shared typewriter core
 6. [x] Add destroy() methods
 7. [x] Clean up empty directory
-8. [x] Test and commit
+8. [x] Consolidate path configuration
+9. [x] Add input validation
+10. [ ] JSDoc standardization (skipped)
 
 ---
 
@@ -102,4 +129,4 @@ Code quality improvements identified during structure review.
 **Started:** 2026-01-18
 **Completed:** 2026-01-18
 
-All refactoring tasks complete.
+All refactoring tasks complete (except JSDoc).

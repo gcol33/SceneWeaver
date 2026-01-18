@@ -15,6 +15,18 @@
 var TUNING = {
 
     // =========================================
+    // ASSET PATHS
+    // =========================================
+
+    paths: {
+        backgrounds: 'assets/bg/',
+        characters: 'assets/char/',
+        music: 'assets/music/',
+        sfx: 'assets/sfx/',
+        fonts: 'assets/fonts/'
+    },
+
+    // =========================================
     // TEXT DISPLAY
     // =========================================
 
