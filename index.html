@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SceneWeaver</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/text-box.css">
+    <link rel="stylesheet" href="css/choices.css">
+    <link rel="stylesheet" href="css/transitions.css">
+
+    <!-- Theme (loaded after base styles) -->
+    <link rel="stylesheet" href="themes/default.css">
+</head>
+<body>
+    <!-- Game Container -->
+    <div id="sw-container">
+        <!-- Background Layer -->
+        <div id="sw-background"></div>
+
+        <!-- Sprite Layer -->
+        <div id="sw-sprites"></div>
+
+        <!-- UI Layer -->
+        <div id="sw-ui">
+            <!-- Text Box -->
+            <div id="sw-text-box">
+                <div id="sw-text-content"></div>
+            </div>
+
+            <!-- Choices -->
+            <div id="sw-choices"></div>
+
+            <!-- Controls -->
+            <div id="sw-controls">
+                <button id="sw-continue" class="sw-btn">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="js/tuning.js"></script>
+    <script src="js/core/errors.js"></script>
+    <script src="js/core/event-bus.js"></script>
+    <script src="js/core/store.js"></script>
+    <script src="js/core/bootstrap.js"></script>
+
+    <!-- Managers -->
+    <script src="js/managers/flag-manager.js"></script>
+    <script src="js/managers/audio-manager.js"></script>
+    <script src="js/managers/save-manager.js"></script>
+
+    <!-- Story Data (generated) -->
+    <script src="js/story.js"></script>
+
+    <!-- Engine -->
+    <script src="js/engine.js"></script>
+</body>
+</html>

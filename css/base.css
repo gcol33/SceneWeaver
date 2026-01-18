@@ -1,0 +1,90 @@
+/**
+ * SceneWeaver Base Styles
+ *
+ * Reset and fundamental styles.
+ * All sizes use calc(N * var(--u)) where N is pixels at 1920px reference.
+ */
+
+/* ===========================================
+   RESET
+   =========================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--sw-bg-color);
+    color: var(--sw-text-color);
+    font-family: var(--sw-font-family);
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* ===========================================
+   GAME CONTAINER - THE UNIT SYSTEM
+   =========================================== */
+
+#sw-container {
+    /* Container queries for isolated scaling */
+    container-type: inline-size;
+    container-name: game;
+
+    /* The magic: calculate --u based on container width */
+    --raw-u: calc(100cqw / var(--sw-ref));
+    --u: max(var(--raw-u), calc(1px * var(--sw-min-scale)));
+
+    /* Positioning */
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0 auto;
+
+    /* Aspect ratio */
+    aspect-ratio: 16 / 9;
+    max-height: 100vh;
+    max-height: 100dvh;
+
+    /* Overflow */
+    overflow: hidden;
+
+    /* Base font size using --u */
+    font-size: calc(var(--sw-text-size) * var(--u));
+    line-height: var(--sw-text-line-height);
+}
+
+/* Portrait mode */
+@media (orientation: portrait) {
+    #sw-container {
+        --sw-ref: 1080;
+        aspect-ratio: 9 / 16;
+        max-height: 90dvh;
+    }
+}
+
+/* ===========================================
+   UTILITY CLASSES
+   =========================================== */
+
+.sw-hidden {
+    display: none !important;
+}
+
+.sw-invisible {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.sw-no-select {
+    user-select: none;
+    -webkit-user-select: none;
+}

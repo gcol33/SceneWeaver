@@ -1,0 +1,134 @@
+/**
+ * SceneWeaver Choices
+ *
+ * Choice buttons for branching narrative.
+ */
+
+/* ===========================================
+   CHOICES CONTAINER
+   =========================================== */
+
+#sw-choices {
+    z-index: var(--sw-z-choices);
+
+    display: flex;
+    flex-direction: column;
+    gap: calc(12 * var(--u));
+    margin-bottom: calc(16 * var(--u));
+}
+
+#sw-choices:empty {
+    display: none;
+}
+
+/* ===========================================
+   CHOICE BUTTON
+   =========================================== */
+
+.sw-choice {
+    padding: calc(16 * var(--u)) calc(24 * var(--u));
+
+    /* Appearance */
+    background: var(--sw-btn-bg);
+    border: calc(1 * var(--u)) solid var(--sw-box-border);
+    border-radius: calc(8 * var(--u));
+
+    /* Text */
+    font-size: calc(24 * var(--u));
+    color: var(--sw-text-color);
+    text-align: left;
+    text-shadow: var(--sw-text-shadow);
+
+    /* Interaction */
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.sw-choice:hover {
+    background: var(--sw-btn-hover);
+    border-color: var(--sw-accent-color);
+}
+
+.sw-choice:active {
+    background: var(--sw-btn-active);
+    transform: scale(0.98);
+}
+
+/* ===========================================
+   DISABLED CHOICE (requirements not met)
+   =========================================== */
+
+.sw-choice--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ===========================================
+   CHOICE WITH REQUIREMENT HINT
+   =========================================== */
+
+.sw-choice-requirement {
+    display: block;
+    font-size: calc(16 * var(--u));
+    color: var(--sw-text-dim);
+    margin-top: calc(4 * var(--u));
+}
+
+/* ===========================================
+   CONTROLS (Continue button etc)
+   =========================================== */
+
+#sw-controls {
+    z-index: var(--sw-z-controls);
+    display: flex;
+    justify-content: center;
+    gap: calc(16 * var(--u));
+}
+
+.sw-btn {
+    padding: calc(12 * var(--u)) calc(32 * var(--u));
+
+    /* Appearance */
+    background: var(--sw-btn-bg);
+    border: calc(1 * var(--u)) solid var(--sw-box-border);
+    border-radius: calc(8 * var(--u));
+
+    /* Text */
+    font-size: calc(20 * var(--u));
+    color: var(--sw-text-color);
+
+    /* Interaction */
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.sw-btn:hover {
+    background: var(--sw-btn-hover);
+    border-color: var(--sw-accent-color);
+}
+
+.sw-btn:active {
+    background: var(--sw-btn-active);
+}
+
+.sw-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* ===========================================
+   PORTRAIT MODE ADJUSTMENTS
+   =========================================== */
+
+@media (orientation: portrait) {
+    .sw-choice {
+        font-size: calc(20 * var(--u));
+        padding: calc(14 * var(--u)) calc(20 * var(--u));
+    }
+
+    .sw-btn {
+        font-size: calc(18 * var(--u));
+        padding: calc(10 * var(--u)) calc(24 * var(--u));
+    }
+}

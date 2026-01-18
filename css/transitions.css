@@ -1,0 +1,131 @@
+/**
+ * SceneWeaver Transitions
+ *
+ * Fade effects and animations.
+ */
+
+/* ===========================================
+   SCENE FADE
+   =========================================== */
+
+#sw-container.sw-fading {
+    pointer-events: none;
+}
+
+#sw-container.sw-fade-out #sw-background,
+#sw-container.sw-fade-out #sw-sprites,
+#sw-container.sw-fade-out #sw-ui {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+#sw-container.sw-fade-in #sw-background,
+#sw-container.sw-fade-in #sw-sprites,
+#sw-container.sw-fade-in #sw-ui {
+    opacity: 1;
+    transition: opacity 0.3s ease-in;
+}
+
+/* ===========================================
+   TEXT BOX VISIBILITY
+   =========================================== */
+
+#sw-text-box.sw-entering {
+    animation: sw-slide-up 0.3s ease-out forwards;
+}
+
+#sw-text-box.sw-exiting {
+    animation: sw-slide-down 0.3s ease-out forwards;
+}
+
+@keyframes sw-slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(calc(20 * var(--u)));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sw-slide-down {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(calc(20 * var(--u)));
+    }
+}
+
+/* ===========================================
+   CHOICE APPEARANCE
+   =========================================== */
+
+.sw-choice {
+    animation: sw-choice-appear 0.2s ease-out backwards;
+}
+
+.sw-choice:nth-child(1) { animation-delay: 0ms; }
+.sw-choice:nth-child(2) { animation-delay: 50ms; }
+.sw-choice:nth-child(3) { animation-delay: 100ms; }
+.sw-choice:nth-child(4) { animation-delay: 150ms; }
+.sw-choice:nth-child(5) { animation-delay: 200ms; }
+
+@keyframes sw-choice-appear {
+    from {
+        opacity: 0;
+        transform: translateX(calc(-10 * var(--u)));
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===========================================
+   SPRITE TRANSITIONS
+   =========================================== */
+
+.sw-sprite.sw-entering {
+    animation: sw-sprite-enter 0.3s ease-out forwards;
+}
+
+.sw-sprite.sw-exiting {
+    animation: sw-sprite-exit 0.3s ease-out forwards;
+}
+
+@keyframes sw-sprite-enter {
+    from {
+        opacity: 0;
+        transform: translateY(calc(30 * var(--u)));
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes sw-sprite-exit {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* ===========================================
+   ERROR FLASH
+   =========================================== */
+
+@keyframes sw-error-flash {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: rgba(255, 0, 0, 0.2); }
+}
+
+.sw-error-flash {
+    animation: sw-error-flash 0.3s ease;
+}

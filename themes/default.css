@@ -1,0 +1,31 @@
+/**
+ * SceneWeaver Default Theme
+ *
+ * Clean, modern dark theme.
+ * Override --sw- variables to customize.
+ */
+
+:root {
+    /* Text */
+    --sw-text-color: #f0f0f0;
+    --sw-text-dim: rgba(240, 240, 240, 0.6);
+    --sw-text-shadow: 0 calc(2 * var(--u)) calc(6 * var(--u)) rgba(0, 0, 0, 0.9);
+
+    /* Backgrounds */
+    --sw-bg-color: #16161e;
+    --sw-bg-overlay: rgba(0, 0, 0, 0.5);
+
+    /* Accent */
+    --sw-accent-color: #7aa2f7;
+    --sw-accent-hover: #89b4fa;
+
+    /* UI Elements */
+    --sw-box-bg: rgba(22, 22, 30, 0.9);
+    --sw-box-border: rgba(122, 162, 247, 0.3);
+    --sw-btn-bg: rgba(122, 162, 247, 0.15);
+    --sw-btn-hover: rgba(122, 162, 247, 0.25);
+    --sw-btn-active: rgba(122, 162, 247, 0.35);
+
+    /* Fonts */
+    --sw-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}

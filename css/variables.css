@@ -1,0 +1,72 @@
+/**
+ * SceneWeaver CSS Variables
+ *
+ * All themeable variables use --sw- prefix.
+ * Layout variables use --u unit system.
+ */
+
+:root {
+    /* ===========================================
+       SCALING SYSTEM
+       =========================================== */
+
+    /* Reference width: design at 1920px */
+    --sw-ref: 1920;
+
+    /* Minimum scale (480px / 1920px = 0.25) */
+    --sw-min-scale: 0.25;
+
+    /* ===========================================
+       THEME COLORS (overridable)
+       =========================================== */
+
+    /* Text */
+    --sw-text-color: #ffffff;
+    --sw-text-dim: rgba(255, 255, 255, 0.7);
+    --sw-text-shadow: 0 calc(2 * var(--u)) calc(4 * var(--u)) rgba(0, 0, 0, 0.8);
+
+    /* Backgrounds */
+    --sw-bg-color: #1a1a2e;
+    --sw-bg-overlay: rgba(0, 0, 0, 0.6);
+
+    /* Accent */
+    --sw-accent-color: #ffd700;
+    --sw-accent-hover: #ffec8b;
+
+    /* UI Elements */
+    --sw-box-bg: rgba(0, 0, 0, 0.75);
+    --sw-box-border: rgba(255, 255, 255, 0.2);
+    --sw-btn-bg: rgba(255, 255, 255, 0.1);
+    --sw-btn-hover: rgba(255, 255, 255, 0.2);
+    --sw-btn-active: rgba(255, 255, 255, 0.3);
+
+    /* ===========================================
+       THEME FONTS (overridable)
+       =========================================== */
+
+    --sw-font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --sw-font-family-mono: 'Consolas', 'Monaco', monospace;
+
+    /* ===========================================
+       LAYOUT CONSTANTS (not theme-overridable)
+       =========================================== */
+
+    /* Text box */
+    --sw-text-lines: 4;
+    --sw-text-line-height: 1.5;
+    --sw-text-size: 28;
+
+    /* Log mode */
+    --sw-log-slots: 2;
+    --sw-log-row1-opacity: 0.7;
+    --sw-log-row2-opacity: 1.0;
+
+    /* Z-index scale */
+    --sw-z-background: 1;
+    --sw-z-sprites: 10;
+    --sw-z-ui: 100;
+    --sw-z-text-box: 110;
+    --sw-z-choices: 120;
+    --sw-z-controls: 130;
+    --sw-z-modal: 1000;
+}

@@ -1,0 +1,88 @@
+/**
+ * SceneWeaver Layout
+ *
+ * Game layers: background, sprites, UI.
+ */
+
+/* ===========================================
+   BACKGROUND LAYER
+   =========================================== */
+
+#sw-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--sw-z-background);
+
+    background-color: var(--sw-bg-color);
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+
+    transition: background-image 0.5s ease-in-out;
+}
+
+/* ===========================================
+   SPRITE LAYER
+   =========================================== */
+
+#sw-sprites {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--sw-z-sprites);
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    pointer-events: none;
+}
+
+.sw-sprite {
+    position: absolute;
+    bottom: 0;
+    max-height: 80%;
+    width: auto;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.sw-sprite--left {
+    left: 10%;
+}
+
+.sw-sprite--center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.sw-sprite--right {
+    right: 10%;
+}
+
+/* ===========================================
+   UI LAYER
+   =========================================== */
+
+#sw-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: var(--sw-z-ui);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: calc(16 * var(--u));
+
+    pointer-events: none;
+}
+
+#sw-ui > * {
+    pointer-events: auto;
+}

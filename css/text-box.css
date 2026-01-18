@@ -1,0 +1,109 @@
+/**
+ * SceneWeaver Text Box
+ *
+ * Dialogue display area with typewriter support.
+ */
+
+/* ===========================================
+   TEXT BOX CONTAINER
+   =========================================== */
+
+#sw-text-box {
+    z-index: var(--sw-z-text-box);
+
+    /* Size based on line count */
+    --text-height: calc(
+        var(--sw-text-lines) *
+        var(--sw-text-size) * var(--u) *
+        var(--sw-text-line-height)
+    );
+
+    min-height: var(--text-height);
+    padding: calc(16 * var(--u)) calc(24 * var(--u));
+    margin-bottom: calc(16 * var(--u));
+
+    /* Appearance */
+    background: var(--sw-box-bg);
+    border: calc(1 * var(--u)) solid var(--sw-box-border);
+    border-radius: calc(8 * var(--u));
+
+    /* Text */
+    font-size: calc(var(--sw-text-size) * var(--u));
+    line-height: var(--sw-text-line-height);
+    color: var(--sw-text-color);
+    text-shadow: var(--sw-text-shadow);
+
+    /* No scrolling */
+    overflow: hidden;
+}
+
+/* ===========================================
+   TEXT CONTENT
+   =========================================== */
+
+#sw-text-content {
+    /* For typewriter cursor positioning */
+    position: relative;
+}
+
+/* Typewriter cursor */
+#sw-text-content::after {
+    content: '';
+    display: inline-block;
+    width: calc(2 * var(--u));
+    height: 1em;
+    background-color: var(--sw-text-color);
+    margin-left: calc(2 * var(--u));
+    animation: sw-blink 0.8s infinite;
+    vertical-align: text-bottom;
+}
+
+#sw-text-content.sw-typing-complete::after {
+    display: none;
+}
+
+@keyframes sw-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* ===========================================
+   LOG MODE (2-row battle style)
+   =========================================== */
+
+#sw-text-box.sw-log-mode {
+    --text-height: calc(
+        var(--sw-log-slots) *
+        var(--sw-text-size) * var(--u) *
+        var(--sw-text-line-height)
+    );
+}
+
+.sw-log-row {
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.sw-log-row--1 {
+    opacity: var(--sw-log-row1-opacity);
+}
+
+.sw-log-row--2 {
+    opacity: var(--sw-log-row2-opacity);
+}
+
+/* Shift animation */
+.sw-log-row.sw-shifting {
+    transform: translateY(calc(-1 * var(--sw-text-size) * var(--u) * var(--sw-text-line-height)));
+}
+
+/* ===========================================
+   PORTRAIT MODE ADJUSTMENTS
+   =========================================== */
+
+@media (orientation: portrait) {
+    #sw-text-box {
+        /* Slightly smaller text on mobile */
+        --sw-text-size: 24;
+        padding: calc(12 * var(--u)) calc(16 * var(--u));
+    }
+}
