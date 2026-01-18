@@ -314,22 +314,100 @@ State 3: Message C arrives
 
 ### Configuration
 
+See [TUNING.md](./TUNING.md) for all tunable values.
+
+**Minimum slots:** Both modes require at least 2 visible lines/slots. Engine enforces `Math.max(2, value)`.
+
+---
+
+## Tuning System
+
+All timing, speed, and behavior values are centralized and tunable. No magic numbers in code.
+
+### Priority
+
+```
+Module TUNING.md > Core TUNING.md > Hardcoded defaults
+```
+
+### Structure
+
+```
+sceneweaver/
+├── TUNING.md                 # Core tuning values
+└── modules/
+    ├── battle/
+    │   └── TUNING.md         # Battle module overrides
+    └── quiz/
+        └── TUNING.md         # Quiz module overrides
+```
+
+### Usage
+
 ```javascript
-// sceneweaver.config.js
-export default {
-  text: {
-    lines: 4,                    // Visible lines, block mode (min: 2)
-    logSlots: 2,                 // Visible slots, log mode (min: 2)
-    lineHeight: 1.5,             // Unitless multiplier
-    typewriter: true,            // Enable typewriter effect
-    typewriterSpeed: 30,         // ms per character
-    portraitExtraLines: false,   // If true, portrait uses portraitLines
-    portraitLines: 6             // Lines in portrait (if opt-in)
-  }
+// Get value (respects module overrides)
+const speed = SceneWeaver.tuning.get('text.speed.normal');
+
+// Get with fallback
+const custom = SceneWeaver.tuning.get('my.custom.value', 500);
+
+// Module registers overrides
+SceneWeaver.tuning.register('battle', {
+  'log.lingerDelay': 800
+});
+```
+
+### Rules
+
+1. **Never hardcode** timing/speed values in code
+2. **Always use** `SceneWeaver.tuning.get(key, default)`
+3. **Document** every tuning value in TUNING.md
+4. **Modules override** core values automatically
+
+See [TUNING.md](./TUNING.md) for all core tuning values.
+
+---
+
+## Theming System
+
+Themes override **visual appearance only** — colors, fonts, decorative elements. Layout is not theme-controlled.
+
+### Theme Files
+
+```css
+/* themes/my-theme.css */
+:root {
+  /* Colors */
+  --sw-text-color: #ffffff;
+  --sw-bg-color: #1a1a2e;
+  --sw-accent-color: #ffd700;
+
+  /* Fonts */
+  --sw-font-family: 'My Custom Font', sans-serif;
+
+  /* Decorative */
+  --sw-border-style: 2px solid var(--sw-accent-color);
 }
 ```
 
-**Minimum slots:** Both modes require at least 2 visible lines/slots. Engine enforces `Math.max(2, config.lines)`.
+### Rules
+
+1. **Colors only** — no width, height, padding, margin
+2. **Fonts allowed** — family, weight, style
+3. **Decorative borders** — style and color, not width in layout units
+4. **No layout changes** — themes cannot change element positioning
+
+### CSS Variable Naming
+
+All themeable variables use `--sw-` prefix:
+
+| Variable | Purpose |
+|----------|---------|
+| `--sw-text-color` | Primary text color |
+| `--sw-text-dim` | Dimmed/secondary text |
+| `--sw-bg-color` | Background color |
+| `--sw-accent-color` | Accent/highlight color |
+| `--sw-font-family` | Primary font |
 
 ---
 
