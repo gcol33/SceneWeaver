@@ -234,6 +234,105 @@ SceneWeaver.registerModule(MyModule);
 
 ---
 
+## Text System
+
+Core provides two text rendering modes. Both use the same `--u` scaling and line-height math.
+
+### Shared Text Properties
+
+```css
+.sw-text-box {
+  --lines: 4;                    /* Visible line count */
+  --line-height: 1.5;            /* Unitless multiplier */
+  --text-size: calc(28 * var(--u));
+
+  height: calc(var(--lines) * var(--text-size) * var(--line-height));
+  overflow: hidden;              /* No scrollbar ever */
+}
+```
+
+### Mode 1: Block Mode (Story/Dialogue)
+
+For user-paced reading. Text auto-splits to fit visible lines, Continue button advances.
+
+```
+┌─────────────────────────────────┐
+│ This is a block of story text   │
+│ that auto-splits based on the   │
+│ box height. When it fills up,   │
+│ user must press Continue.       │
+└─────────────────────────────────┘
+         [Continue]
+```
+
+**Behavior:**
+- Text block auto-splits to fit N lines
+- Typewriter effect (configurable)
+- **Continue** button required to advance
+- Next block replaces previous entirely
+
+### Mode 2: Log Mode (Battle/System Messages)
+
+For continuous flow. New messages enter at bottom, old messages shift up and exit.
+
+**Rule:** New message always enters bottom slot. Existing messages shift up. Top slot exits when full.
+
+```
+State 1: Message A arrives
+┌─────────────────────────────────┐
+│                                 │  ← slot 1 (empty)
+│ A: Hero attacks!                │  ← slot 2 (new)
+└─────────────────────────────────┘
+
+State 2: Message B arrives
+┌─────────────────────────────────┐
+│ A: Hero attacks!                │  ← slot 1 (A shifted up)
+│ B: Goblin takes 12 damage.      │  ← slot 2 (new)
+└─────────────────────────────────┘
+
+State 3: Message C arrives
+┌─────────────────────────────────┐
+│ B: Goblin takes 12 damage.      │  ← slot 1 (B shifted up, A gone)
+│ C: Goblin is defeated!          │  ← slot 2 (new)
+└─────────────────────────────────┘
+```
+
+**Behavior:**
+- Fixed slot count (configurable, e.g., 2)
+- New message always enters bottom slot
+- Existing messages shift up with animation
+- Top message exits when pushed out
+- No user input required
+- No manual scrolling
+
+### Line Count by Orientation
+
+| Mode | Default | Opt-in |
+|------|---------|--------|
+| Landscape | 4 lines | — |
+| Portrait | 4 lines (smaller text) | More lines via config |
+
+### Configuration
+
+```javascript
+// sceneweaver.config.js
+export default {
+  text: {
+    lines: 4,                    // Visible lines, block mode (min: 2)
+    logSlots: 2,                 // Visible slots, log mode (min: 2)
+    lineHeight: 1.5,             // Unitless multiplier
+    typewriter: true,            // Enable typewriter effect
+    typewriterSpeed: 30,         // ms per character
+    portraitExtraLines: false,   // If true, portrait uses portraitLines
+    portraitLines: 6             // Lines in portrait (if opt-in)
+  }
+}
+```
+
+**Minimum slots:** Both modes require at least 2 visible lines/slots. Engine enforces `Math.max(2, config.lines)`.
+
+---
+
 ## Core vs Module Responsibilities
 
 ### Core (Built-in)
