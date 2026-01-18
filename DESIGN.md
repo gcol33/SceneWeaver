@@ -314,7 +314,7 @@ State 3: Message C arrives
 
 ### Configuration
 
-See [TUNING.md](./TUNING.md) for all tunable values.
+See `tuning.js` for all tunable values.
 
 **Minimum slots:** Both modes require at least 2 visible lines/slots. Engine enforces `Math.max(2, value)`.
 
@@ -322,49 +322,126 @@ See [TUNING.md](./TUNING.md) for all tunable values.
 
 ## Tuning System
 
-All timing, speed, and behavior values are centralized and tunable. No magic numbers in code.
+All timing, speed, and behavior values are centralized in JavaScript files. No magic numbers in code.
 
 ### Priority
 
 ```
-Module TUNING.md > Core TUNING.md > Hardcoded defaults
+Module tuning > Core tuning > Hardcoded defaults
 ```
 
 ### Structure
 
 ```
 sceneweaver/
-├── TUNING.md                 # Core tuning values
+├── js/
+│   └── tuning.js             # Core tuning values
 └── modules/
     ├── battle/
-    │   └── TUNING.md         # Battle module overrides
+    │   └── tuning.js         # Battle module overrides
     └── quiz/
-        └── TUNING.md         # Quiz module overrides
+        └── tuning.js         # Quiz module overrides
 ```
 
-### Usage
+### Core Tuning File
 
 ```javascript
-// Get value (respects module overrides)
-const speed = SceneWeaver.tuning.get('text.speed.normal');
+// js/tuning.js
+const TUNING = {
+  // === Text Display ===
+  text: {
+    speed: {
+      normal: 18,       // ms per character
+      fast: 10,
+      instant: 0
+    },
+    autoAdvanceDelay: 1500,
+    skipModeDelay: 150,
+    lines: 4,           // Visible lines (min: 2)
+    lineHeight: 1.5
+  },
 
-// Get with fallback
-const custom = SceneWeaver.tuning.get('my.custom.value', 500);
+  // === Log Mode ===
+  log: {
+    slots: 2,           // Visible slots (min: 2)
+    shiftDuration: 200,
+    lingerDelay: 1200,
+    row1Opacity: 0.7,
+    row2Opacity: 1.0
+  },
 
-// Module registers overrides
-SceneWeaver.tuning.register('battle', {
-  'log.lingerDelay': 800
+  // === Audio ===
+  audio: {
+    defaultVolume: 0.16,
+    duckVolume: 0.2,
+    crossfadeDuration: 1000
+  },
+
+  // === Transitions ===
+  transition: {
+    sceneFade: 300,
+    backgroundFade: 500,
+    spriteFade: 300
+  }
+};
+
+// Helper for dot-path access
+TUNING.get = function(path, fallback) {
+  var parts = path.split('.');
+  var value = TUNING;
+  for (var i = 0; i < parts.length; i++) {
+    if (value && typeof value === 'object' && parts[i] in value) {
+      value = value[parts[i]];
+    } else {
+      return fallback;
+    }
+  }
+  return value;
+};
+
+// Module override registration
+TUNING.register = function(moduleName, overrides) {
+  // Deep merge, module values win
+  for (var key in overrides) {
+    var parts = key.split('.');
+    var target = TUNING;
+    for (var i = 0; i < parts.length - 1; i++) {
+      if (!(parts[i] in target)) target[parts[i]] = {};
+      target = target[parts[i]];
+    }
+    target[parts[parts.length - 1]] = overrides[key];
+  }
+};
+
+window.TUNING = TUNING;
+```
+
+### Module Override
+
+```javascript
+// modules/battle/tuning.js
+TUNING.register('battle', {
+  'log.lingerDelay': 800,     // Battle needs faster log
+  'text.speed.normal': 25     // Battle text slightly slower
 });
+```
+
+### Usage in Code
+
+```javascript
+// Direct access
+var speed = TUNING.text.speed.normal;
+
+// With fallback (preferred)
+var speed = TUNING.get('text.speed.normal', 18);
 ```
 
 ### Rules
 
-1. **Never hardcode** timing/speed values in code
-2. **Always use** `SceneWeaver.tuning.get(key, default)`
-3. **Document** every tuning value in TUNING.md
-4. **Modules override** core values automatically
-
-See [TUNING.md](./TUNING.md) for all core tuning values.
+1. **Never hardcode** timing/speed values
+2. **Always use** `TUNING.get(key, default)` for safety
+3. **Document** values with comments in tuning.js
+4. **Modules override** via `TUNING.register()`
 
 ---
 
@@ -411,6 +488,91 @@ All themeable variables use `--sw-` prefix:
 
 ---
 
+## Save System
+
+### Core: Autosave
+
+Core provides automatic save/load using localStorage. No user action required.
+
+**What's saved:**
+- Current scene ID
+- Current text block index
+- Flags (regular + persistent)
+- Read blocks (for skip functionality)
+- Scene history (for undo/back)
+
+**Autosave behavior:**
+- Saves to slot 0 automatically
+- Interval: every 30 seconds (tunable)
+- Also saves on scene change
+- Loads automatically on page load
+
+```javascript
+// Core save manager (built-in)
+SceneWeaver.save.auto();           // Trigger autosave
+SceneWeaver.save.load();           // Load from slot 0
+SceneWeaver.save.hasSave();        // Check if save exists
+SceneWeaver.save.clear();          // Delete save
+```
+
+**localStorage keys:**
+```
+sw_save          # Main autosave (slot 0)
+sw_settings      # User settings (volume, text speed)
+sw_read_blocks   # Tracks which text has been read
+```
+
+### Module: Save Slots (Optional)
+
+For games that need multiple save slots, a save-slots module provides:
+
+- Multiple slots (1-9)
+- Manual save/load UI
+- Export/import as JSON files
+- Save metadata (timestamp, scene name, playtime)
+
+```javascript
+// Save slots module (optional)
+SceneWeaver.saveSlots.save(3);           // Save to slot 3
+SceneWeaver.saveSlots.load(3);           // Load from slot 3
+SceneWeaver.saveSlots.delete(3);         // Delete slot 3
+SceneWeaver.saveSlots.getInfo(3);        // Get slot metadata
+SceneWeaver.saveSlots.export(3);         // Download as JSON
+SceneWeaver.saveSlots.import(file, 3);   // Import from file
+```
+
+### Save Data Structure
+
+```javascript
+{
+  // Scene state
+  currentSceneId: 'chapter1_scene5',
+  currentBlockIndex: 2,
+
+  // Flags
+  flags: ['met_hero', 'opened_door'],
+  keyFlags: ['unlocked_ending_b'],    // Persist across "New Game"
+
+  // Progress tracking
+  readBlocks: ['scene1:0', 'scene1:1', 'scene2:0'],
+  history: ['intro', 'chapter1_scene1', 'chapter1_scene2'],
+
+  // Metadata
+  timestamp: 1705123456789,
+  version: '1.0.0'
+}
+```
+
+### Validation
+
+Save data is validated on load to prevent crashes from corrupted saves:
+
+- Check required fields exist
+- Verify types (string, number, array)
+- Clear corrupted saves with user notification
+
+---
+
 ## Core vs Module Responsibilities
 
 ### Core (Built-in)
@@ -419,12 +581,13 @@ All themeable variables use `--sw-` prefix:
 - Text display (typewriter effect)
 - Choices & branching
 - Flag management (regular + persistent)
-- Save/load system
+- Autosave (slot 0)
 - Audio playback (music + SFX)
 - Asset loading & caching
 
 ### Modules (Opt-in)
 
+- Save slots UI (multiple slots, export/import)
 - Battle system
 - Quick-time events (QTE)
 - Quiz/dialogue trees
